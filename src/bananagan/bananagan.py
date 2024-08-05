@@ -10,8 +10,9 @@ import itertools
 from PIL import Image as PILImage
 import random
 import typing
-from enum import Enum
+from enum import Enum, auto
 import torch
+import gdown
 
 
 class ModelCheckPoint(ABC):
@@ -90,60 +91,34 @@ class ModelCheckPoint(ABC):
             yield self.generate_image(input_image, block_size, c)
 
 
-class RachisHealthyModel(ModelCheckPoint):
-    """
-    Model to generate images of healthy rachis
-    """
-
-    def __init__(self):
-        super().__init__("checkpoints/rachis_healthy.pth")
-
-
-class RachisBBDModel(ModelCheckPoint):
-    """
-    Model to generate images of rachis with banana blood disease
-    """
-
-    def __init__(self):
-        super().__init__("checkpoints/rachis_bbd.pth")
-
-
-class PseudostemHealthyModel(ModelCheckPoint):
-    """
-    Model to generate images of healthy pseudostems
-    """
-
-    def __init__(self):
-        super().__init__("checkpoints/pseudostem_healthy.pth")
-
-
-class PseudostemBXWModel(ModelCheckPoint):
-    """
-    Model to generate images of pseudostems with banana xanthomonas wilt
-    """
-
-    def __init__(self):
-        super().__init__("checkpoints/pseudostem_bxw.pth")
-
-
-class PseudostemFWBModel(ModelCheckPoint):
-    """
-    Model to generate images of pseudostems with banana fusarium wilt
-    """
-
-    def __init__(self):
-        super().__init__("checkpoints/pseudostem_fwb.pth")
 
 
 class PseudostemModels(Enum):
-    healthy = PseudostemHealthyModel
-    xanthomonas_wilt = PseudostemBXWModel
-    fusarium_wilt = PseudostemFWBModel
+    healthy = auto()
+    xanthomonas_wilt = auto()
+    fusarium_wilt = auto()
 
 
 class RachisModels(Enum):
-    healthy = RachisHealthyModel
-    banana_blood_disease = RachisBBDModel
+    healthy = auto()
+    banana_blood_disease = auto()
+
+
+GDRIVE_FILE_IDS = {
+    PseudostemModels.healthy: "1GoXyCmWB6amIE-CDL7HWQpQfwoR_1a5Q",
+    PseudostemModels.xanthomonas_wilt: "1ZmP1azGq1O74sQsu3bhU5iK2L69OlNt1",
+    PseudostemModels.fusarium_wilt: "1r_s9t141mkG30b25XNyw_wUmqJkfFO5r",
+    RachisModels.healthy: "1-Mmyi7Afqyx6OeGrlaExGufSeT6hEwPg",
+    RachisModels.banana_blood_disease: "1kTidkMlVcRZg8d8WSS1UT-DhX8bsHyZN"
+}
+
+CHECKPOINT_FILES = {
+    PseudostemModels.healthy: "pseudostem_healthy.pth",
+    PseudostemModels.xanthomonas_wilt: "pseudostem_bxw.pth",
+    PseudostemModels.fusarium_wilt: "pseudostem_fwb.pth",
+    RachisModels.healthy: "rachis_healthy.pth",
+    RachisModels.banana_blood_disease: "rachis_bbd.pth"
+}
 
 
 class BananaGan:
@@ -154,5 +129,15 @@ class BananaGan:
         :param model:
         :return:
         """
-        model = model.value()
-        return model
+        gdrive_file_id = GDRIVE_FILE_IDS[model]
+        checkpoint_file = CHECKPOINT_FILES[model]
+
+        checkpoints_dir = "checkpoints"
+        Path(checkpoints_dir).mkdir(exist_ok=True)
+        checkpoint_path = Path(checkpoints_dir + "/" + checkpoint_file)
+
+        if not checkpoint_path.exists():
+            print(f"Downloading {checkpoint_file} from google drive")
+            gdown.download(id=gdrive_file_id, output=str(checkpoint_path), quiet=False)
+
+        return ModelCheckPoint(checkpoint_path)
