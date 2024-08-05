@@ -13,7 +13,7 @@ if __name__ == '__main__':
         generated_image = model(input_image=image_color, block_size=bsz, c=1)
         images.append(generated_image)
 
-    fig = plt.figure(figsize=(10, 5))
+    fig = plt.figure(figsize=(20, 5))
     for i, generated_image in enumerate(images):
         ax = fig.add_subplot(1, len(images), i+1)
         ax.imshow(generated_image)
