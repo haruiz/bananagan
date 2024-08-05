@@ -46,7 +46,7 @@ if __name__ == '__main__':
     plt.show()
 ```
 
-![Pseudostem with Xanthomonas wilt](./images/plot1.png)
+![Pseudostem with Xanthomonas wilt](https://raw.githubusercontent.com/haruiz/bananagan/main/images/plot1.png)
 
 
 **2. Generate images with different parameters:**
@@ -76,7 +76,7 @@ if __name__ == '__main__':
     plt.show()
 ```
 
-![Pseudostem with Xanthomonas wilt](./images/plot2.png)
+![Pseudostem with Xanthomonas wilt](https://raw.githubusercontent.com/haruiz/bananagan/main/images/plot2.png)
 
 ## Available Models
 
