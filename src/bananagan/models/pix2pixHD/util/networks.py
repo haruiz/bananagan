@@ -37,8 +37,8 @@ def define_G(input_nc, output_nc, ngf, netG, n_downsample_global=3, n_blocks_glo
     else:
         raise('generator not implemented!')
     if len(gpu_ids) > 0:
-        assert(torch.cuda.is_available())   
-        netG.cuda(gpu_ids[0])
+        device = torch.get_default_device()
+        netG.to(device)
     netG.apply(weights_init)
     return netG
 
@@ -46,8 +46,8 @@ def define_D(input_nc, ndf, n_layers_D, norm='instance', use_sigmoid=False, num_
     norm_layer = get_norm_layer(norm_type=norm)   
     netD = MultiscaleDiscriminator(input_nc, ndf, n_layers_D, norm_layer, use_sigmoid, num_D, getIntermFeat)   
     if len(gpu_ids) > 0:
-        assert(torch.cuda.is_available())
-        netD.cuda(gpu_ids[0])
+        device = torch.get_default_device()
+        netD.to(device)
     netD.apply(weights_init)
     return netD
 

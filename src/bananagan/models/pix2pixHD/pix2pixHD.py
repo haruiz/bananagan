@@ -119,7 +119,8 @@ class Pix2PixHDModel(BaseModel):
 
     def encode_input(self, label_map, inst_map=None, real_image=None, feat_map=None, infer=False):             
         if self.opt.label_nc == 0:
-            input_label = label_map.data.cuda()
+            device = torch.get_default_device()
+            input_label = label_map.data.to(device)
         else:
             # create one-hot vector for label map 
             size = label_map.size()

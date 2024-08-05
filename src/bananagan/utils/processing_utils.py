@@ -1,10 +1,8 @@
-from PIL import Image as PILImage
 import cv2
 import numpy as np
-from torchvision import transforms
 import torchvision.transforms.functional as F
-from bananagan.models.pix2pixHD.util import data_utils
-from bananagan.models.pix2pixHD.options import TestOptions
+from PIL import Image as PILImage
+import torch
 
 
 class SquarePad:
@@ -31,6 +29,18 @@ def create_label_image(image: PILImage, block_size=13, c=1) -> PILImage:
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     binary = cv2.adaptiveThreshold(gray, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, block_size, c)
     return PILImage.fromarray(binary)
+
+
+def get_pytorch_device():
+    """
+    Get the pytorch device
+    """
+    if torch.backends.mps.is_available():
+        return torch.device("mps")
+    elif torch.cuda.is_available():
+        return torch.device("cuda")
+    else:
+        return torch.device("cpu")
 
 
 

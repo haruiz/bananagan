@@ -1,5 +1,7 @@
 import argparse
 import os
+
+from bananagan.utils import get_pytorch_device
 from ..util import misc_util
 import torch
 
@@ -77,7 +79,9 @@ class BaseOptions():
         
         # set gpu ids
         if len(self.opt.gpu_ids) > 0:
-            torch.cuda.set_device(self.opt.gpu_ids[0])
+            device = get_pytorch_device()
+            torch.set_default_device(device)
+
 
         # save to the disk
         if save:
